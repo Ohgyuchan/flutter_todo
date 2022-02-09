@@ -2,7 +2,12 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const GetMaterialApp(
+  runApp(GetMaterialApp(
+    theme: ThemeData(
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+    ),
     home: MyApp(),
   ));
 }
@@ -39,22 +44,20 @@ class _State extends State<MyApp> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-        setState(() {
-          if (addCheck) {
-            if (controllers.last.text.trim().isEmpty) {
-              fileds.removeLast();
-              nodes.removeLast();
-              controllers.removeLast();
-              longPresseds.removeLast();
-              checkeds.removeLast();
-            }
+        if (addCheck) {
+          if (controllers.last.text.trim().isEmpty) {
+            setState(() {
+              removeItemByIndex(controllers.length - 1);
+            });
           }
-          int value = longPresseds.indexOf(true);
-          if (value != -1) {
-            longPresseds[longPresseds.indexOf(true)] = false;
-          }
-          addCheck = false;
-        });
+          setState(() {
+            addCheck = false;
+          });
+        } else {
+          setState(() {
+            longPressedCheck();
+          });
+        }
       },
       child: Scaffold(
           appBar: AppBar(
@@ -88,26 +91,41 @@ class _State extends State<MyApp> {
                   padding: const EdgeInsets.all(8),
                   itemCount: fileds.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Get.defaultDialog();
-                      },
-                      onLongPress: () {
-                        setState(() {
-                          int value = longPresseds.indexOf(true);
-                          if (value != -1) {
-                            longPresseds[longPresseds.indexOf(true)] = false;
-                          }
-                          longPresseds[index] = true;
-                          nodes[index].requestFocus();
-                        });
-                      },
-                      child: SizedBox(
-                        width: 300,
-                        child: longPresseds[index]
-                            ? inputBox(index)
-                            : Text(controllers[index].text),
-                      ),
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: ListTile(
+                            leading: Checkbox(
+                              value: checkeds[index],
+                              onChanged: (value) {
+                                setState(() {
+                                  if (!longPresseds[index]) {
+                                    checkeds[index] = !checkeds[index];
+                                  }
+                                });
+                              },
+                            ),
+                            title: longPresseds[index]
+                                ? inputBox(index)
+                                : Text(controllers[index].text),
+                            trailing: IconButton(
+                                onPressed: () {
+                                  Get.defaultDialog();
+                                },
+                                icon: Icon(Icons.more_horiz)),
+                            onTap: () {
+                              Get.defaultDialog();
+                            },
+                            onLongPress: () {
+                              setState(() {
+                                longPressedCheck();
+                                longPresseds[index] = true;
+                                nodes[index].requestFocus();
+                              });
+                            },
+                          ),
+                        ),
+                      ],
                     );
                   }),
             )
@@ -132,10 +150,15 @@ class _State extends State<MyApp> {
                 controllers[index].text = str;
               });
             }
+            setState(() {
+              longPresseds[index] = false;
+            });
+          } else {
+            setState(() {
+              removeItemByIndex(controllers.length - 1);
+              addCheck = false;
+            });
           }
-          setState(() {
-            longPresseds[index] = false;
-          });
         }
       },
       child: TextField(
@@ -143,47 +166,46 @@ class _State extends State<MyApp> {
         focusNode: nodes[index],
         decoration: InputDecoration(
           hintText: '입력',
-          prefixIcon: Checkbox(
-            value: checkeds[index],
-            onChanged: (value) {
-              setState(() {
-                checkeds[index] = !checkeds[index];
-              });
-            },
-          ),
-          suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.more)),
         ),
         onSubmitted: (value) {
+          if (addCheck) {
+            if (value.trim().isEmpty) {
+              if (index == nodes.length - 1) {
+                setState(() {
+                  removeItemByIndex(index);
+                  addCheck = false;
+                });
+              }
+            } else {
+              addItemToList();
+              setState(() {
+                longPresseds.last = true;
+              });
+              nodes.last.requestFocus();
+            }
+          }
           if (value.trim().isNotEmpty) {
             setState(() {
               longPresseds[index] = false;
             });
-            if (addCheck) {
-              if (value.trim().isEmpty) {
-                if (index == nodes.length - 1) {
-                  setState(() {
-                    addCheck = false;
-                    fileds.removeAt(index);
-                    nodes.removeAt(index);
-                    controllers.removeAt(index);
-                    longPresseds.removeAt(index);
-                    checkeds.removeAt(index);
-                  });
-                }
-              } else {
-                addItemToList();
-                setState(() {
-                  longPresseds.last = true;
-                });
-                nodes.last.requestFocus();
-              }
-            } else {
-              nodes[index].unfocus();
-            }
           }
-          addCheck = false;
         },
       ),
     );
+  }
+
+  removeItemByIndex(int index) {
+    fileds.removeAt(index);
+    nodes.removeAt(index);
+    controllers.removeAt(index);
+    longPresseds.removeAt(index);
+    checkeds.removeAt(index);
+  }
+
+  longPressedCheck() {
+    int value = longPresseds.indexOf(true);
+    if (value != -1) {
+      longPresseds[longPresseds.indexOf(true)] = false;
+    }
   }
 }
