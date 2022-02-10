@@ -73,17 +73,16 @@ class _State extends State<MyApp> {
           actions: [
             IconButton(
               onPressed: () {
+                for (var element in selectedElements) {
+                  element.node.unfocus();
+                }
                 setState(() {
-                  setState(() {
-                    index++;
-                    addItemToList('목표$index', pickDate);
-                    setState(() {
-                      addCheck = true;
-                      selectedElements.last.longPressed = true;
-                    });
-                    selectedElements.last.node.requestFocus();
-                  });
+                  index++;
+                  addItemToList('목표$index', pickDate);
+                  addCheck = true;
+                  selectedElements.last.longPressed = true;
                 });
+                selectedElements.last.node.requestFocus();
               },
               icon: Icon(Icons.add),
             ),
@@ -114,11 +113,11 @@ class _State extends State<MyApp> {
         formatButtonVisible: false,
         leftChevronIcon: Icon(
           Icons.chevron_left,
-          color: Colors.white,
+          color: Colors.black,
         ),
         rightChevronIcon: Icon(
           Icons.chevron_right,
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
       calendarBuilders: CalendarBuilders(
@@ -152,7 +151,7 @@ class _State extends State<MyApp> {
             child: Container(
               decoration: BoxDecoration(
                 border:
-                    date == pickDate ? Border.all(color: Colors.white) : null,
+                    date == pickDate ? Border.all(color: Colors.black) : null,
                 borderRadius: BorderRadius.circular(4.0),
               ),
               child: Center(
@@ -303,11 +302,9 @@ class _State extends State<MyApp> {
     selectedElements =
         elements.where((element) => element.dateTime == pickDate).toList();
 
-    kElements.addAll(Map.fromIterable(selectedElements,
-        key: (element) {
-          return day;
-        },
-        value: (element) => element));
+    kElements.addAll({
+      for (var element in selectedElements) element.dateTime: selectedElements
+    });
     return kElements[day] ?? [];
   }
 
@@ -370,6 +367,7 @@ class _State extends State<MyApp> {
 
   removeItem(Elements element) {
     selectedElements.remove(element);
+    elements.remove(element);
   }
 
   longPressedCheck(Elements element) {
@@ -380,8 +378,7 @@ class _State extends State<MyApp> {
   }
 
   addItemToList(String group, DateTime dateTime) {
-    setState(() {
-      elements.add(Elements(group, dateTime));
-    });
+    selectedElements.add(Elements(group, dateTime));
+    elements.add(Elements(group, dateTime));
   }
 }
