@@ -10,14 +10,18 @@ import 'package:table_calendar/table_calendar.dart';
 import 'elements.dart';
 
 void main() {
-  initializeDateFormatting().then((_) => runApp(GetMaterialApp(
+  initializeDateFormatting().then(
+    (_) => runApp(
+      GetMaterialApp(
         theme: ThemeData(
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
         home: MyApp(),
-      )));
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -173,7 +177,7 @@ class _State extends State<MyApp> {
                           ? Color(0xFF8A89ED)
                           : Color(0xFF5646D5),
                   border:
-                      date == pickDate ? Border.all(color: Colors.white) : null,
+                      date == pickDate ? Border.all(color: Colors.black) : null,
                   borderRadius: BorderRadius.circular(4.0),
                 ),
                 child: Center(
