@@ -1,26 +1,13 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_todo/screens/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_todo/screens/home_screen.dart';
+import 'package:flutter_todo/services/localization_service.dart';
 
-final supportedLocales = [
-  Locale('en', 'US'),
-  Locale('ko', 'KR'),
-];
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await EasyLocalization.ensureInitialized();
-
+void main() {
   initializeDateFormatting().then(
     (_) => runApp(
-      EasyLocalization(
-        supportedLocales: supportedLocales,
-        path: 'assets/locales',
-        fallbackLocale: Locale('en', 'US'),
-        child: MyApp(),
-      ),
+      MyApp(),
     ),
   );
 }
@@ -31,12 +18,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
+      locale: LocalizationService.locale,
+      fallbackLocale: LocalizationService.fallbackLocale,
+      translations: LocalizationService(),
       theme: ThemeData(
-        splashColor: Colors.transparent,
         hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
       home: HomeScreen(),
