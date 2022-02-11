@@ -1,24 +1,25 @@
-import 'dart:collection';
-
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_todo/screens/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 
-import 'src/elements.dart';
+final supportedLocales = [
+  Locale('en', 'US'),
+  Locale('ko', 'KR'),
+];
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
   initializeDateFormatting().then(
     (_) => runApp(
-      GetMaterialApp(
-        theme: ThemeData(
-          splashColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        home: MyApp(),
+      EasyLocalization(
+        supportedLocales: supportedLocales,
+        path: 'assets/locales',
+        fallbackLocale: Locale('en', 'US'),
+        child: MyApp(),
       ),
     ),
   );
@@ -29,10 +30,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
+    return GetMaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      theme: ThemeData(
+        splashColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
       ),
+      home: HomeScreen(),
     );
   }
 }
