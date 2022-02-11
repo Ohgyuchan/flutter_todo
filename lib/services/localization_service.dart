@@ -8,22 +8,20 @@ class LocalizationService extends Translations {
   static final locale = Locale('en', 'US');
 
   // fallbackLocale saves the day when the locale gets in trouble
-  static final fallbackLocale = Locale('tr', 'TR');
+  static final fallbackLocale = Locale('en', 'US');
 
   // Supported languages
   // Needs to be same order with locales
   static final langs = [
     'English',
-    'Türkçe',
-    '日本語',
+    '한국어',
   ];
 
   // Supported locales
   // Needs to be same order with langs
   static final locales = [
     Locale('en', 'US'),
-    Locale('tr', 'TR'),
-    Locale('ja', 'JP'),
+    Locale('ko', 'KR'),
   ];
 
   // Keys and their translations
@@ -31,7 +29,7 @@ class LocalizationService extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
         'en_US': enUS, // lang/en_us.dart
-        'ko_KR': koKR, // lang/ja_jp.dart
+        'ko_KR': koKR,
       };
 
   // Gets locale from language, and updates the locale

@@ -10,6 +10,13 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('title'.tr),
       ),
+      body: _buildBody(),
+    );
+  }
+
+  _buildBody() {
+    return Center(
+      child: Text('default_group'.tr),
     );
   }
 }

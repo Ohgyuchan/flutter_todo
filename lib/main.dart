@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      locale: LocalizationService.locale,
+      locale: window.locale,
       fallbackLocale: LocalizationService.fallbackLocale,
       translations: LocalizationService(),
       theme: ThemeData(
