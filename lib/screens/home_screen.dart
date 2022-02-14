@@ -6,17 +6,32 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('title'.tr),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('title'.tr),
+        ),
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 
   _buildBody() {
-    return Center(
-      child: Text('default_group'.tr),
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {},
+          child: Row(
+            children: [
+              Text('default_group'.tr),
+              const Icon(Icons.add),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
